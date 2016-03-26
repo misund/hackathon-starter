@@ -105,7 +105,7 @@ app.use(function(req, res, next) {
 });
 app.use(function(req, res, next) {
   // After successful login, redirect back to /api, /contact or /
-  if (/(api)|(contact)|(^\/$)/i.test(req.path)) {
+  if (/(api-examples)|(contact)|(^\/$)/i.test(req.path)) {
     req.session.returnTo = req.path;
   }
   next();
@@ -128,7 +128,7 @@ app.post('/contact', contactController.postContact);
 /**
  * Route API eamples
  */
-app.use('/api', apiExamplesRouter);
+app.use('/api-examples', apiExamplesRouter);
 
 /**
  * Error Handler.
