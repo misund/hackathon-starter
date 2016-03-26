@@ -9,6 +9,9 @@
     "start": "node start.js",
     "test": "mocha --compilers js:babel-core/register --reporter spec --timeout 5000"
   },
+  "engines": {
+	  "node": "^5.9.1"
+  },
   "dependencies": {
     "async": "^1.5.2",
     "babel-core": "6.7.4",
