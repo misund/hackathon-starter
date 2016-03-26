@@ -1,5 +1,5 @@
 ![](https://lh4.googleusercontent.com/-PVw-ZUM9vV8/UuWeH51os0I/AAAAAAAAD6M/0Ikg7viJftQ/w1286-h566-no/hackathon-starter-logo.jpg)
-Hackathon Starter [![Dependency Status](https://david-dm.org/misund/hackathon-starter/status.svg?style=flat)](https://david-dm.org/misund/hackathon-starter) [![Build Status](https://travis-ci.org/misund/hackathon-starter.svg?branch=master)](https://travis-ci.org/misund/hackathon-starter)
+Hackathon Starter [![Dependency Status](https://david-dm.org/misund/hackathon-starter/status.svg?style=flat)](https://david-dm.org/misund/hackathon-starter) [![Codeship Status for misund/hackathon-starter](https://codeship.com/projects/0efbf520-d51a-0133-ca18-327c1bd47108/status?branch=master)](https://codeship.com/projects/142564)
 =======================
 
 **Live Demo**: http://hackathonstarter.herokuapp.com
