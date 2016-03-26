@@ -27,7 +27,7 @@ let request;
  * GET /api
  * List of API examples.
  */
-exports.getApi = function(req, res) {
+exports.getApi = (req, res) => {
   res.render('api/index', {
     title: 'API Examples'
   });
@@ -37,7 +37,7 @@ exports.getApi = function(req, res) {
  * GET /api/foursquare
  * Foursquare API example.
  */
-exports.getFoursquare = function(req, res, next) {
+exports.getFoursquare = (req, res, next) => {
   foursquare = require('node-foursquare')({
     secrets: {
       clientId: process.env.FOURSQUARE_ID,
@@ -48,23 +48,23 @@ exports.getFoursquare = function(req, res, next) {
 
   const token = _.find(req.user.tokens, { kind: 'foursquare' });
   async.parallel({
-    trendingVenues: function(callback) {
-      foursquare.Venues.getTrending('40.7222756', '-74.0022724', { limit: 50 }, token.accessToken, function(err, results) {
+    trendingVenues: (callback) => {
+      foursquare.Venues.getTrending('40.7222756', '-74.0022724', { limit: 50 }, token.accessToken, (err, results) => {
         callback(err, results);
       });
     },
-    venueDetail: function(callback) {
-      foursquare.Venues.getVenue('49da74aef964a5208b5e1fe3', token.accessToken, function(err, results) {
+    venueDetail: (callback) => {
+      foursquare.Venues.getVenue('49da74aef964a5208b5e1fe3', token.accessToken, (err, results) => {
         callback(err, results);
       });
     },
-    userCheckins: function(callback) {
-      foursquare.Users.getCheckins('self', null, token.accessToken, function(err, results) {
+    userCheckins: (callback) => {
+      foursquare.Users.getCheckins('self', null, token.accessToken, (err, results) => {
         callback(err, results);
       });
     }
   },
-  function(err, results) {
+  (err, results) => {
     if (err) {
       return next(err);
     }
@@ -81,7 +81,7 @@ exports.getFoursquare = function(req, res, next) {
  * GET /api/tumblr
  * Tumblr API example.
  */
-exports.getTumblr = function(req, res, next) {
+exports.getTumblr = (req, res, next) => {
   tumblr = require('tumblr.js');
 
   const token = _.find(req.user.tokens, { kind: 'tumblr' });
@@ -91,7 +91,7 @@ exports.getTumblr = function(req, res, next) {
     token: token.accessToken,
     token_secret: token.tokenSecret
   });
-  client.posts('mmosdotcom.tumblr.com', { type: 'photo' }, function(err, data) {
+  client.posts('mmosdotcom.tumblr.com', { type: 'photo' }, (err, data) => {
     if (err) {
       return next(err);
     }
@@ -107,24 +107,24 @@ exports.getTumblr = function(req, res, next) {
  * GET /api/facebook
  * Facebook API example.
  */
-exports.getFacebook = function(req, res, next) {
+exports.getFacebook = (req, res, next) => {
   graph = require('fbgraph');
 
   const token = _.find(req.user.tokens, { kind: 'facebook' });
   graph.setAccessToken(token.accessToken);
   async.parallel({
-    getMe: function(done) {
-      graph.get(req.user.facebook + "?fields=id,name,email,first_name,last_name,gender,link,locale,timezone", function(err, me) {
+    getMe: (done) => {
+      graph.get(req.user.facebook + "?fields=id,name,email,first_name,last_name,gender,link,locale,timezone", (err, me) => {
         done(err, me);
       });
     },
-    getMyFriends: function(done) {
-      graph.get(req.user.facebook + '/friends', function(err, friends) {
+    getMyFriends: (done) => {
+      graph.get(req.user.facebook + '/friends', (err, friends) => {
         done(err, friends.data);
       });
     }
   },
-  function(err, results) {
+  (err, results) => {
     if (err) {
       return next(err);
     }
@@ -140,14 +140,14 @@ exports.getFacebook = function(req, res, next) {
  * GET /api/scraping
  * Web scraping example using Cheerio library.
  */
-exports.getScraping = function(req, res, next) {
+exports.getScraping = (req, res, next) => {
   cheerio = require('cheerio');
   request = require('request');
 
-  request.get('https://news.ycombinator.com/', function(err, request, body) {
+  request.get('https://news.ycombinator.com/', (err, request, body) => {
     const $ = cheerio.load(body);
     let links = [];
-    $('.title a[href^="http"], a[href^="https"]').each(function() {
+    $('.title a[href^="http"], a[href^="https"]').each( () => {
       links.push($(this));
     });
     res.render('api/scraping', {
@@ -161,13 +161,13 @@ exports.getScraping = function(req, res, next) {
  * GET /api/github
  * GitHub API Example.
  */
-exports.getGithub = function(req, res, next) {
+exports.getGithub = (req, res, next) => {
   Github = require('github-api');
 
   const token = _.find(req.user.tokens, { kind: 'github' });
   const github = new Github({ token: token.accessToken });
   const repo = github.getRepo('sahat', 'requirejs-library');
-  repo.show(function(err, repo) {
+  repo.show( (err, repo) => {
     if (err) {
       return next(err);
     }
@@ -183,7 +183,7 @@ exports.getGithub = function(req, res, next) {
  * GET /api/aviary
  * Aviary image processing example.
  */
-exports.getAviary = function(req, res) {
+exports.getAviary = (req, res) => {
   res.render('api/aviary', {
     title: 'Aviary API'
   });
@@ -193,7 +193,7 @@ exports.getAviary = function(req, res) {
  * GET /api/nyt
  * New York Times API example.
  */
-exports.getNewYorkTimes = function(req, res, next) {
+exports.getNewYorkTimes = (req, res, next) => {
   request = require('request');
 
   const query = {
@@ -201,7 +201,7 @@ exports.getNewYorkTimes = function(req, res, next) {
     'api-key': process.env.NYT_KEY
   };
 
-  request.get({ url: 'http://api.nytimes.com/svc/books/v2/lists', qs: query }, function(err, request, body) {
+  request.get({ url: 'http://api.nytimes.com/svc/books/v2/lists', qs: query }, (err, request, body) => {
     if (request.statusCode === 403) {
       return next(new Error('Invalid New York Times API Key'));
     }
@@ -217,7 +217,7 @@ exports.getNewYorkTimes = function(req, res, next) {
  * GET /api/lastfm
  * Last.fm API example.
  */
-exports.getLastfm = function(req, res, next) {
+exports.getLastfm = (req, res, next) => {
   request = require('request');
   LastFmNode = require('lastfm').LastFmNode;
 
@@ -227,55 +227,55 @@ exports.getLastfm = function(req, res, next) {
   });
 
   async.parallel({
-    artistInfo: function(done) {
+    artistInfo: (done) => {
       lastfm.request('artist.getInfo', {
         artist: 'The Pierces',
         handlers: {
-          success: function(data) {
+          success: (data) => {
             done(null, data);
           },
-          error: function(err) {
+          error: (err) => {
             done(err);
           }
         }
       });
     },
-    artistTopTracks: function(done) {
+    artistTopTracks: (done) => {
       lastfm.request('artist.getTopTracks', {
         artist: 'The Pierces',
         handlers: {
-          success: function(data) {
+          success: (data) => {
             let tracks = [];
-            _.each(data.toptracks.track, function(track) {
+            _.each(data.toptracks.track, (track) => {
               tracks.push(track);
             });
             done(null, tracks.slice(0,10));
           },
-          error: function(err) {
+          error: (err) => {
             done(err);
           }
         }
       });
     },
-    artistTopAlbums: function(done) {
+    artistTopAlbums: (done) => {
       lastfm.request('artist.getTopAlbums', {
         artist: 'The Pierces',
         handlers: {
-          success: function(data) {
+          success: (data) => {
             let albums = [];
-            _.each(data.topalbums.album, function(album) {
+            _.each(data.topalbums.album, (album) => {
               albums.push(album.image.slice(-1)[0]['#text']);
             });
             done(null, albums.slice(0, 4));
           },
-          error: function(err) {
+          error: (err) => {
             done(err);
           }
         }
       });
     }
   },
-  function(err, results) {
+  (err, results) => {
     if (err) {
       return next(err.message);
     }
@@ -300,7 +300,7 @@ exports.getLastfm = function(req, res, next) {
  * GET /api/twitter
  * Twiter API example.
  */
-exports.getTwitter = function(req, res, next) {
+exports.getTwitter = (req, res, next) => {
   Twit = require('twit');
 
   const token = _.find(req.user.tokens, { kind: 'twitter' });
@@ -310,7 +310,7 @@ exports.getTwitter = function(req, res, next) {
     access_token: token.accessToken,
     access_token_secret: token.tokenSecret
   });
-  T.get('search/tweets', { q: 'nodejs since:2013-01-01', geocode: '40.71448,-74.00598,5mi', count: 10 }, function(err, reply) {
+  T.get('search/tweets', { q: 'nodejs since:2013-01-01', geocode: '40.71448,-74.00598,5mi', count: 10 }, (err, reply) => {
     if (err) {
       return next(err);
     }
@@ -325,7 +325,7 @@ exports.getTwitter = function(req, res, next) {
  * POST /api/twitter
  * Post a tweet.
  */
-exports.postTwitter = function(req, res, next) {
+exports.postTwitter = (req, res, next) => {
   req.assert('tweet', 'Tweet cannot be empty.').notEmpty();
 
   let errors = req.validationErrors();
@@ -342,7 +342,7 @@ exports.postTwitter = function(req, res, next) {
     access_token: token.accessToken,
     access_token_secret: token.tokenSecret
   });
-  T.post('statuses/update', { status: req.body.tweet }, function(err, data, response) {
+  T.post('statuses/update', { status: req.body.tweet }, (err, data, response) => {
     if (err) {
       return next(err);
     }
@@ -355,35 +355,35 @@ exports.postTwitter = function(req, res, next) {
  * GET /api/steam
  * Steam API example.
  */
-exports.getSteam = function(req, res, next) {
+exports.getSteam = (req, res, next) => {
   request = require('request');
 
   const steamId = '76561197982488301';
   const params = { l: 'english', steamid: steamId, key: process.env.STEAM_KEY };
 
   async.parallel({
-    playerAchievements: function(done) {
+    playerAchievements: (done) => {
       params.appid = '49520';
-      request.get({ url: 'http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/', qs: params, json: true }, function(err, request, body) {
+      request.get({ url: 'http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/', qs: params, json: true }, (err, request, body) => {
         if (request.statusCode === 401) {
           return done(new Error('Invalid Steam API Key'));
         }
         done(err, body);
       });
     },
-    playerSummaries: function(done) {
+    playerSummaries: (done) => {
       params.steamids = steamId;
-      request.get({ url: 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/', qs: params, json: true }, function(err, request, body) {
+      request.get({ url: 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/', qs: params, json: true }, (err, request, body) => {
         if (request.statusCode === 401) {
           return done(new Error('Missing or Invalid Steam API Key'));
         }
         done(err, body);
       });
     },
-    ownedGames: function(done) {
+    ownedGames: (done) => {
       params.include_appinfo = 1;
       params.include_played_free_games = 1;
-      request.get({ url: 'http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/', qs: params, json: true }, function(err, request, body) {
+      request.get({ url: 'http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/', qs: params, json: true }, (err, request, body) => {
         if (request.statusCode === 401) {
           return done(new Error('Missing or Invalid Steam API Key'));
         }
@@ -391,7 +391,7 @@ exports.getSteam = function(req, res, next) {
       });
     }
   },
-  function(err, results) {
+  (err, results) => {
     if (err) {
       return next(err);
     }
@@ -408,7 +408,7 @@ exports.getSteam = function(req, res, next) {
  * GET /api/stripe
  * Stripe API example.
  */
-exports.getStripe = function(req, res) {
+exports.getStripe = (req, res) => {
   stripe = require('stripe')(process.env.STRIPE_SKEY);
 
   res.render('api/stripe', {
@@ -421,7 +421,7 @@ exports.getStripe = function(req, res) {
  * POST /api/stripe
  * Make a payment.
  */
-exports.postStripe = function(req, res, next) {
+exports.postStripe = (req, res, next) => {
   const stripeToken = req.body.stripeToken;
   const stripeEmail = req.body.stripeEmail;
   stripe.charges.create({
@@ -429,7 +429,7 @@ exports.postStripe = function(req, res, next) {
     currency: 'usd',
     source: stripeToken,
     description: stripeEmail
-  }, function(err, charge) {
+  }, (err, charge) => {
     if (err && err.type === 'StripeCardError') {
       req.flash('errors', { msg: 'Your card has been declined.' });
       res.redirect('/api/stripe');
@@ -443,7 +443,7 @@ exports.postStripe = function(req, res, next) {
  * GET /api/twilio
  * Twilio API example.
  */
-exports.getTwilio = function(req, res) {
+exports.getTwilio = (req, res) => {
   twilio = require('twilio')(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
 
   res.render('api/twilio', {
@@ -455,7 +455,7 @@ exports.getTwilio = function(req, res) {
  * POST /api/twilio
  * Send a text message using Twilio.
  */
-exports.postTwilio = function(req, res, next) {
+exports.postTwilio = (req, res, next) => {
   req.assert('number', 'Phone number is required.').notEmpty();
   req.assert('message', 'Message cannot be blank.').notEmpty();
 
@@ -471,7 +471,7 @@ exports.postTwilio = function(req, res, next) {
     from: '+13472235148',
     body: req.body.message
   };
-  twilio.sendMessage(message, function(err, responseData) {
+  twilio.sendMessage(message, (err, responseData) => {
     if (err) {
       return next(err.message);
     }
@@ -484,7 +484,7 @@ exports.postTwilio = function(req, res, next) {
  * GET /api/clockwork
  * Clockwork SMS API example.
  */
-exports.getClockwork = function(req, res) {
+exports.getClockwork = (req, res) => {
   clockwork = require('clockwork')({ key: process.env.CLOCKWORK_KEY });
 
   res.render('api/clockwork', {
@@ -496,13 +496,13 @@ exports.getClockwork = function(req, res) {
  * POST /api/clockwork
  * Send a text message using Clockwork SMS
  */
-exports.postClockwork = function(req, res, next) {
+exports.postClockwork = (req, res, next) => {
   const message = {
     To: req.body.telephone,
     From: 'Hackathon',
     Content: 'Hello from the Hackathon Starter'
   };
-  clockwork.sendSms(message, function(err, responseData) {
+  clockwork.sendSms(message, (err, responseData) => {
     if (err) {
       return next(err.errDesc);
     }
@@ -515,25 +515,25 @@ exports.postClockwork = function(req, res, next) {
  * GET /api/venmo
  * Venmo API example.
  */
-exports.getVenmo = function(req, res, next) {
+exports.getVenmo = (req, res, next) => {
   request = require('request');
 
   const token = _.find(req.user.tokens, { kind: 'venmo' });
   const query = { access_token: token.accessToken };
 
   async.parallel({
-    getProfile: function(done) {
-      request.get({ url: 'https://api.venmo.com/v1/me', qs: query, json: true }, function(err, request, body) {
+    getProfile: (done) => {
+      request.get({ url: 'https://api.venmo.com/v1/me', qs: query, json: true }, (err, request, body) => {
         done(err, body);
       });
     },
-    getRecentPayments: function(done) {
-      request.get({ url: 'https://api.venmo.com/v1/payments', qs: query, json: true }, function(err, request, body) {
+    getRecentPayments: (done) => {
+      request.get({ url: 'https://api.venmo.com/v1/payments', qs: query, json: true }, (err, request, body) => {
         done(err, body);
       });
     }
   },
-  function(err, results) {
+  (err, results) => {
     if (err) {
       return next(err);
     }
@@ -549,7 +549,7 @@ exports.getVenmo = function(req, res, next) {
  * POST /api/venmo
  * Send money.
  */
-exports.postVenmo = function(req, res, next) {
+exports.postVenmo = (req, res, next) => {
   validator = require('validator');
 
   req.assert('user', 'Phone, Email or Venmo User ID cannot be blank').notEmpty();
@@ -576,7 +576,7 @@ exports.postVenmo = function(req, res, next) {
   } else {
     formData.user_id = req.body.user;
   }
-  request.post('https://api.venmo.com/v1/payments', { form: formData }, function(err, request, body) {
+  request.post('https://api.venmo.com/v1/payments', { form: formData }, (err, request, body) => {
     if (err) {
       return next(err);
     }
@@ -593,12 +593,12 @@ exports.postVenmo = function(req, res, next) {
  * GET /api/linkedin
  * LinkedIn API example.
  */
-exports.getLinkedin = function(req, res, next) {
+exports.getLinkedin = (req, res, next) => {
   Linkedin = require('node-linkedin')(process.env.LINKEDIN_ID, process.env.LINKEDIN_SECRET, process.env.LINKEDIN_CALLBACK_URL);
 
   const token = _.find(req.user.tokens, { kind: 'linkedin' });
   const linkedin = Linkedin.init(token.accessToken);
-  linkedin.people.me(function(err, $in) {
+  linkedin.people.me((err, $in) => {
     if (err) {
       return next(err);
     }
@@ -613,25 +613,25 @@ exports.getLinkedin = function(req, res, next) {
  * GET /api/instagram
  * Instagram API example.
  */
-exports.getInstagram = function(req, res, next) {
+exports.getInstagram = (req, res, next) => {
   ig = require('instagram-node').instagram();
 
   const token = _.find(req.user.tokens, { kind: 'instagram' });
   ig.use({ client_id: process.env.INSTAGRAM_ID, client_secret: process.env.INSTAGRAM_SECRET });
   ig.use({ access_token: token.accessToken });
   async.parallel({
-    searchByUsername: function(done) {
-      ig.user_search('richellemead', function(err, users, limit) {
+    searchByUsername: (done) => {
+      ig.user_search('richellemead', (err, users, limit) => {
         done(err, users);
       });
     },
-    searchByUserId: function(done) {
-      ig.user('175948269', function(err, user) {
+    searchByUserId: (done) => {
+      ig.user('175948269', (err, user) => {
         done(err, user);
       });
     },
-    popularImages: function(done) {
-      ig.media_popular(function(err, medias) {
+    popularImages: (done) => {
+      ig.media_popular( (err, medias) => {
         done(err, medias);
       });
     },
