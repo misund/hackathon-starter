@@ -8,7 +8,6 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const errorHandler = require('errorhandler');
 const lusca = require('lusca');
-const methodOverride = require('method-override');
 const dotenv = require('dotenv');
 const MongoStore = require('connect-mongo/es5')(session);
 const flash = require('express-flash');
@@ -77,7 +76,6 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(expressValidator());
-app.use(methodOverride());
 app.use(session({
   resave: true,
   saveUninitialized: true,
